@@ -1,21 +1,5 @@
-local UIS = game:GetService("UserInputService")
 local Event = game:GetService("ReplicatedStorage").Packages._Index["sleitnick_knit@1.7.0"].knit.Services.SeasonService.RF.RequestRankedReward
-local loopThread = nil -- Tracks the active loop
-
-UIS.InputBegan:Connect(function(input, chat)
-    if chat or input.KeyCode ~= Enum.KeyCode.P then return end -- "P" key to toggle
-
-    if loopThread then
-        task.cancel(loopThread) -- Instantly kills the loop thread
-        loopThread = nil
-        print("Stopped instantly")
-    else
-        loopThread = task.spawn(function()
-            print("Started")
-            while true do
-                Event:InvokeServer(5, nil)
-                task.wait(3.5)
-            end
-        end)
-    end
-end)
+Event:InvokeServer(
+    5,
+    nil
+)
