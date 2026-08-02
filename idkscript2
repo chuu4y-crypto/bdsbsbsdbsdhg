@@ -1,1 +1,6 @@
+_G.LoopToggle = false
+if _G.MyLoopThread then
+    task.cancel(_G.MyLoopThread)
+    _G.MyLoopThread = nil
+end
 
