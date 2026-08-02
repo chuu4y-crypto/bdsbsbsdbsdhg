@@ -1,0 +1,5 @@
+while true do
+    local Event = game:GetService("ReplicatedStorage").Packages._Index["sleitnick_knit@1.7.0"].knit.Services.SeasonService.RF.RequestRankedReward
+    Event:InvokeServer(5, nil)
+    task.wait(3.5)
+end
