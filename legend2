@@ -1,0 +1,15 @@
+_G.LoopToggle = true
+
+-- Safely clear any previous loop before starting a new one
+if _G.MyLoopThread then 
+    task.cancel(_G.MyLoopThread) 
+end
+
+_G.MyLoopThread = task.spawn(function()
+    local Event = game:GetService("ReplicatedStorage").Packages._Index["sleitnick_knit@1.7.0"].knit.Services.SeasonService.RF.RequestRankedReward
+    
+    while _G.LoopToggle do
+        Event:InvokeServer(13, 2)
+        task.wait(3.5)
+    end
+end)
