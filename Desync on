@@ -1,21 +1,22 @@
--- Safety kill for old active loops
-_G.ExtremeLagswitchActive = false
-task.wait(0.03)
+-- Instantly wipe any old loops running in the background
+_G.InsaneLagActive = false
+task.wait(0.01)
 
-_G.ExtremeLagswitchActive = true
+_G.InsaneLagActive = true
 
 task.spawn(function()
-    local netSettings = settings():GetService("NetworkSettings")
+    local settings = settings():GetService("NetworkSettings")
     
-    while _G.ExtremeLagswitchActive do
-        -- Simulates PhysicsSenderMaxBandwidthBps = 9 and InboundReplicationLag
-        netSettings.InboundReplicationLag = 999999
+    while _G.InsaneLagActive do
+        -- Complete network choke (simulates 0 bandwidth)
+        settings.InboundReplicationLag = 999999999
         
-        -- Holds the choke open to heavily restrict all positional data updates
-        task.wait(0.45) 
+        -- Holds the freeze for over half a second. 
+        -- To everyone else, you will freeze entirely or walk through walls.
+        task.wait(0.55) 
         
-        -- Flash release to update your client status so you don't get kicked
-        netSettings.InboundReplicationLag = 0
-        task.wait(0.01)
+        -- Ultra-fast packet flush (forces you to teleport instantly on their screens)
+        settings.InboundReplicationLag = 0
+        task.wait(0.005)
     end
 end)
