@@ -1,2 +1,20 @@
-local f = set_fflag_value or set_fflag_string
-if f then f("DFIntS2PhysicsSenderRate", "1") f("PhysicsSenderMaxBandwidthBps", "9") f("DFIntAnimationLodFacsDistanceMax", "0") f("TaskSchedulerTargetFps", "81") end
+-- Force stop any previous loop instance first
+_G.DesyncActive = false
+task.wait(0.05)
+
+-- Activate the control variable
+_G.DesyncActive = true
+
+task.spawn(function()
+    local Player = game:GetService("Players").LocalPlayer
+    
+    -- Loop runs continuously while the global variable remains true
+    while _G.DesyncActive and Player do
+        Player.SimulationRadius = 1000
+        Player.MaxSimulationRadius = 1000
+        task.wait(0.01)
+        Player.SimulationRadius = 0
+        Player.MaxSimulationRadius = 0
+        task.wait() -- Fast yield to prevent execution lock
+    end
+end)
