@@ -1,9 +1,10 @@
--- Breaks the active loop condition
+-- Instantly signals the loop thread to terminate
 _G.DesyncActive = false
 
--- Reset physics boundaries back to normal default values
-local Player = game:GetService("Players").LocalPlayer
-if Player then
-    Player.SimulationRadius = 100
-    Player.MaxSimulationRadius = 100
-end
+-- Protected call to reset network settings safely without throwing errors
+pcall(function()
+    local netSettings = settings():GetService("NetworkSettings")
+    if netSettings then
+        netSettings.InboundReplicationLag = 0
+    end
+end)
