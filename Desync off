@@ -1,10 +1,12 @@
--- Forces the background thread to break out of the loop instantly
-_G.InsaneLagActive = false
+-- Breaks the packet throttling loop instantly
+_G.ServerDesyncActive = false
 
--- Immediate, absolute reset of the replication lag buffer
+-- Safe wrapper to restore normal server syncing instantly
 pcall(function()
-    local netSettings = settings():GetService("NetworkSettings")
-    if netSettings then
-        netSettings.InboundReplicationLag = 0
+    local networkClient = game:GetService("NetworkClient")
+    if networkClient then
+        -- Restores your character sync to perfect real-time stability
+        networkClient:SetOutgoingKBPSLimit(0) 
+        settings():GetService("NetworkSettings").InboundReplicationLag = 0
     end
 end)
