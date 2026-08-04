@@ -1,20 +1,21 @@
--- Instantly wipe any old loops running in the background
-_G.DesyncActive = false
+-- Safety kill for old active loops
+_G.ExtremeLagswitchActive = false
 task.wait(0.03)
 
-_G.DesyncActive = true
+_G.ExtremeLagswitchActive = true
 
 task.spawn(function()
-    local settings = settings():GetService("NetworkSettings")
+    local netSettings = settings():GetService("NetworkSettings")
     
-    -- High-power oscillation loop to break server synchronization
-    while _G.DesyncActive do
-        -- Completely blocks your outgoing updates from reaching other players
-        settings.InboundReplicationLag = 999999
-        task.wait(0.38) -- Hold the freeze long enough to make you teleport huge distances
+    while _G.ExtremeLagswitchActive do
+        -- Simulates PhysicsSenderMaxBandwidthBps = 9 and InboundReplicationLag
+        netSettings.InboundReplicationLag = 999999
         
-        -- Forces a sudden, intense packet burst to update your true position instantly
-        settings.InboundReplicationLag = 0
+        -- Holds the choke open to heavily restrict all positional data updates
+        task.wait(0.45) 
+        
+        -- Flash release to update your client status so you don't get kicked
+        netSettings.InboundReplicationLag = 0
         task.wait(0.01)
     end
 end)
