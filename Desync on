@@ -1,9 +1,2 @@
-_G.DesyncLoopActive = true
-
-task.spawn(function()
-    local settings = settings():GetService("NetworkSettings")
-    while _G.DesyncLoopActive do
-        settings.InboundReplicationLag = 9999
-        task.wait() 
-    end
-end)
+local f = set_fflag_value or set_fflag_string
+if f then f("DFIntS2PhysicsSenderRate", "1") f("PhysicsSenderMaxBandwidthBps", "9") f("DFIntAnimationLodFacsDistanceMax", "0") f("TaskSchedulerTargetFps", "81") end
