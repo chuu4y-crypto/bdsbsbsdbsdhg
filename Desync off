@@ -1,7 +1,7 @@
--- Break the lag loop condition immediately
-_G.ExtremeLagswitchActive = false
+-- Forces the background thread to break out of the loop instantly
+_G.InsaneLagActive = false
 
--- Restore real-time bandwidth and latency settings safely
+-- Immediate, absolute reset of the replication lag buffer
 pcall(function()
     local netSettings = settings():GetService("NetworkSettings")
     if netSettings then
