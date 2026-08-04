@@ -1,0 +1,9 @@
+_G.DesyncLoopActive = true
+
+task.spawn(function()
+    local settings = settings():GetService("NetworkSettings")
+    while _G.DesyncLoopActive do
+        settings.InboundReplicationLag = 9999
+        task.wait() 
+    end
+end)
