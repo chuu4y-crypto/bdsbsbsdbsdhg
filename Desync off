@@ -1,12 +1,11 @@
--- Breaks the packet throttling loop instantly
-_G.ServerDesyncActive = false
+-- Kill the active while loop condition
+_G.LagSwitchActive = false
 
--- Safe wrapper to restore normal server syncing instantly
-pcall(function()
-    local networkClient = game:GetService("NetworkClient")
-    if networkClient then
-        -- Restores your character sync to perfect real-time stability
-        networkClient:SetOutgoingKBPSLimit(0) 
-        settings():GetService("NetworkSettings").InboundReplicationLag = 0
-    end
-end)
+local players = game:GetService("Players")
+local client = players.LocalPlayer
+local clientCharacter = client.Character
+
+-- Explicitly force network physics back to normal right away
+if clientCharacter and clientCharacter:FindFirstChild("HumanoidRootPart") then
+    sethiddenproperty(clientCharacter.HumanoidRootPart, "NetworkIsSleeping", false)
+end
