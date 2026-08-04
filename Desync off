@@ -1,2 +1,2 @@
-_G.DesyncLoopActive = false
-settings():GetService("NetworkSettings").InboundReplicationLag = 0
+local f = set_fflag_value or set_fflag_string
+if f then f("DFIntS2PhysicsSenderRate", "256") f("PhysicsSenderMaxBandwidthBps", "10000000") f("DFIntAnimationLodFacsDistanceMax", "25") f("TaskSchedulerTargetFps", "300") end
