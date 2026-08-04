@@ -1,23 +1,39 @@
--- Safely kill any old running desync threads first
-_G.ServerDesyncActive = false
-task.wait(0.02)
+-- Set the global flag to active
+_G.LagSwitchActive = true
 
-_G.ServerDesyncActive = true
+local players = game:GetService("Players")
+local client = players.LocalPlayer
+
+-- Prevent duplicate background loops from running simultaneously
+if _G.LagSwitchLoopRunning then return end
+_G.LagSwitchLoopRunning = true
 
 task.spawn(function()
-    local networkClient = game:GetService("NetworkClient")
+    local sleepnet = true
+    while _G.LagSwitchActive do
+        local clientCharacter = client.Character
+        if clientCharacter and clientCharacter:FindFirstChild("HumanoidRootPart") then
+            local hrp = clientCharacter.HumanoidRootPart
+            local oldpos = hrp.CFrame 
+            
+            sleepnet = not sleepnet
+            sethiddenproperty(hrp, "NetworkIsSleeping", sleepnet) 
+            
+            if not sleepnet then 
+                hrp.CFrame = hrp.CFrame + Vector3.new(10, 0, 10) 
+            end 
+            
+            hrp.CFrame = oldpos 
+            task.wait(0.15) -- Adjust timing for heavier or lighter lag
+        else
+            task.wait(0.1) -- Short wait if character is missing
+        end
+    end
     
-    while _G.ServerDesyncActive do
-        -- Intercepts outbound socket updates to stop packet uploads
-        -- Other players will see you freeze solid or float in mid-air
-        settings():GetService("NetworkSettings").InboundReplicationLag = 0
-        
-        -- Forces your network traffic to buffer outbound replication updates
-        networkClient:SetOutgoingKBPSLimit(1) 
-        task.wait(0.48) -- Hold time for massive warp/teleport distance
-        
-        -- Instant packet flush to jump your character to your new location
-        networkClient:SetOutgoingKBPSLimit(999999)
-        task.wait(0.01)
+    -- Clean up and restore physics when the loop terminates
+    _G.LagSwitchLoopRunning = false
+    local clientCharacter = client.Character
+    if clientCharacter and clientCharacter:FindFirstChild("HumanoidRootPart") then
+        sethiddenproperty(clientCharacter.HumanoidRootPart, "NetworkIsSleeping", false)
     end
 end)
