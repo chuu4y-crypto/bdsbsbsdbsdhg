@@ -1,20 +1,17 @@
--- Force stop any previous loop instance first
+-- Kill previous loops to prevent stacking
 _G.DesyncActive = false
 task.wait(0.05)
 
--- Activate the control variable
 _G.DesyncActive = true
 
 task.spawn(function()
-    local Player = game:GetService("Players").LocalPlayer
+    local settings = settings():GetService("NetworkSettings")
     
-    -- Loop runs continuously while the global variable remains true
-    while _G.DesyncActive and Player do
-        Player.SimulationRadius = 1000
-        Player.MaxSimulationRadius = 1000
+    -- Loop cycles replication lag to maximize packet choke without disconnecting you
+    while _G.DesyncActive do
+        settings.InboundReplicationLag = 50 -- Heavy network stall
+        task.wait(0.15)
+        settings.InboundReplicationLag = 0  -- Quick catch-up to prevent crash
         task.wait(0.01)
-        Player.SimulationRadius = 0
-        Player.MaxSimulationRadius = 0
-        task.wait() -- Fast yield to prevent execution lock
     end
 end)
