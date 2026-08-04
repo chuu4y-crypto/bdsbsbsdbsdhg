@@ -1,2 +1,9 @@
-local f = set_fflag_value or set_fflag_string
-if f then f("DFIntS2PhysicsSenderRate", "256") f("PhysicsSenderMaxBandwidthBps", "10000000") f("DFIntAnimationLodFacsDistanceMax", "25") f("TaskSchedulerTargetFps", "300") end
+-- Breaks the active loop condition
+_G.DesyncActive = false
+
+-- Reset physics boundaries back to normal default values
+local Player = game:GetService("Players").LocalPlayer
+if Player then
+    Player.SimulationRadius = 100
+    Player.MaxSimulationRadius = 100
+end
