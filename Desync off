@@ -1,7 +1,7 @@
--- Instantly signals the loop thread to terminate
-_G.DesyncActive = false
+-- Break the lag loop condition immediately
+_G.ExtremeLagswitchActive = false
 
--- Protected call to reset network settings safely without throwing errors
+-- Restore real-time bandwidth and latency settings safely
 pcall(function()
     local netSettings = settings():GetService("NetworkSettings")
     if netSettings then
