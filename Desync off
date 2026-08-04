@@ -1,0 +1,2 @@
+_G.DesyncLoopActive = false
+settings():GetService("NetworkSettings").InboundReplicationLag = 0
