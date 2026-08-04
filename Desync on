@@ -1,22 +1,23 @@
--- Instantly wipe any old loops running in the background
-_G.InsaneLagActive = false
-task.wait(0.01)
+-- Safely kill any old running desync threads first
+_G.ServerDesyncActive = false
+task.wait(0.02)
 
-_G.InsaneLagActive = true
+_G.ServerDesyncActive = true
 
 task.spawn(function()
-    local settings = settings():GetService("NetworkSettings")
+    local networkClient = game:GetService("NetworkClient")
     
-    while _G.InsaneLagActive do
-        -- Complete network choke (simulates 0 bandwidth)
-        settings.InboundReplicationLag = 999999999
+    while _G.ServerDesyncActive do
+        -- Intercepts outbound socket updates to stop packet uploads
+        -- Other players will see you freeze solid or float in mid-air
+        settings():GetService("NetworkSettings").InboundReplicationLag = 0
         
-        -- Holds the freeze for over half a second. 
-        -- To everyone else, you will freeze entirely or walk through walls.
-        task.wait(0.55) 
+        -- Forces your network traffic to buffer outbound replication updates
+        networkClient:SetOutgoingKBPSLimit(1) 
+        task.wait(0.48) -- Hold time for massive warp/teleport distance
         
-        -- Ultra-fast packet flush (forces you to teleport instantly on their screens)
-        settings.InboundReplicationLag = 0
-        task.wait(0.005)
+        -- Instant packet flush to jump your character to your new location
+        networkClient:SetOutgoingKBPSLimit(999999)
+        task.wait(0.01)
     end
 end)
