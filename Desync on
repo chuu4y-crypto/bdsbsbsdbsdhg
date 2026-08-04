@@ -1,17 +1,20 @@
--- Kill previous loops to prevent stacking
+-- Instantly wipe any old loops running in the background
 _G.DesyncActive = false
-task.wait(0.05)
+task.wait(0.03)
 
 _G.DesyncActive = true
 
 task.spawn(function()
     local settings = settings():GetService("NetworkSettings")
     
-    -- Loop cycles replication lag to maximize packet choke without disconnecting you
+    -- High-power oscillation loop to break server synchronization
     while _G.DesyncActive do
-        settings.InboundReplicationLag = 50 -- Heavy network stall
-        task.wait(0.15)
-        settings.InboundReplicationLag = 0  -- Quick catch-up to prevent crash
+        -- Completely blocks your outgoing updates from reaching other players
+        settings.InboundReplicationLag = 999999
+        task.wait(0.38) -- Hold the freeze long enough to make you teleport huge distances
+        
+        -- Forces a sudden, intense packet burst to update your true position instantly
+        settings.InboundReplicationLag = 0
         task.wait(0.01)
     end
 end)
