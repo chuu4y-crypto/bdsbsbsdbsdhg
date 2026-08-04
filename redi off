@@ -1,0 +1,6 @@
+_G.GloopActive = false
+
+if _G.GloopConnection then
+    _G.GloopConnection:Disconnect()
+    _G.GloopConnection = nil
+end
